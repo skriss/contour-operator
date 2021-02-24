@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	operatorv1alpha1 "github.com/projectcontour/contour-operator/api/v1alpha1"
-	objcr "github.com/projectcontour/contour-operator/internal/objects/clusterrole"
+	"github.com/projectcontour/contour-operator/internal/objects/clusterrole"
 	objcrb "github.com/projectcontour/contour-operator/internal/objects/clusterrolebinding"
 	objcontour "github.com/projectcontour/contour-operator/internal/objects/contour"
 	objrole "github.com/projectcontour/contour-operator/internal/objects/role"
@@ -57,7 +57,7 @@ func EnsureRBAC(ctx context.Context, cli client.Client, contour *operatorv1alpha
 			certSvcAct = svcAct
 		}
 	}
-	cr, err := objcr.EnsureClusterRole(ctx, cli, ContourRbacName, contour)
+	cr, err := clusterrole.Ensure(ctx, cli, ContourRbacName, contour)
 	if err != nil {
 		return fmt.Errorf("failed to ensure cluster role %s: %w", ContourRbacName, err)
 	}
@@ -140,7 +140,7 @@ func EnsureRBACDeleted(ctx context.Context, cli client.Client, contour *operator
 		if crb != nil {
 			objectsToDelete = append(objectsToDelete, crb)
 		}
-		cr, err := objcr.CurrentClusterRole(ctx, cli, ContourRbacName)
+		cr, err := clusterrole.Current(ctx, cli, ContourRbacName)
 		if err != nil {
 			if !errors.IsNotFound(err) {
 				return err

@@ -33,11 +33,11 @@ import (
 	gatewayv1alpha1 "sigs.k8s.io/gateway-api/apis/v1alpha1"
 )
 
-// EnsureClusterRole ensures a ClusterRole resource exists with the provided name
+// Ensure ensures a ClusterRole resource exists with the provided name
 // and contour namespace/name for the owning contour labels.
-func EnsureClusterRole(ctx context.Context, cli client.Client, name string, contour *operatorv1alpha1.Contour) (*rbacv1.ClusterRole, error) {
+func Ensure(ctx context.Context, cli client.Client, name string, contour *operatorv1alpha1.Contour) (*rbacv1.ClusterRole, error) {
 	desired := desiredClusterRole(name, contour)
-	current, err := CurrentClusterRole(ctx, cli, name)
+	current, err := Current(ctx, cli, name)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			updated, err := createClusterRole(ctx, cli, desired)
@@ -140,8 +140,8 @@ func desiredClusterRole(name string, contour *operatorv1alpha1.Contour) *rbacv1.
 	return cr
 }
 
-// CurrentClusterRole returns the current ClusterRole for the provided name.
-func CurrentClusterRole(ctx context.Context, cli client.Client, name string) (*rbacv1.ClusterRole, error) {
+// Current returns the current ClusterRole for the provided name.
+func Current(ctx context.Context, cli client.Client, name string) (*rbacv1.ClusterRole, error) {
 	current := &rbacv1.ClusterRole{}
 	key := types.NamespacedName{Name: name}
 	err := cli.Get(ctx, key, current)
