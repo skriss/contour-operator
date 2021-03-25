@@ -11,6 +11,7 @@ linters:
     - misspell
     - unconvert
     - unparam
+    - goheader
 
 linters-settings:
   misspell:
@@ -22,6 +23,8 @@ linters-settings:
     simplify: true
   unparam:
     check-exported: false
+  goheader:
+    template-path: ./hack/license-template.txt
 
 issues:
   exclude:
